@@ -18,8 +18,8 @@
 void servo_config(unsigned char servo)
 {
     // Clear the servo output port pin before enabling the output tristate.
-    LATC = LATC & (!servo);
-    TRISC = TRISC & (!servo);
+    LATC = LATC & ~servo;
+    TRISC = TRISC & ~servo;
 }
 
 // Create a single servo pulse on the specified SERVO1 - SERVO8 output, with 
@@ -33,5 +33,5 @@ void servo_pulse(unsigned char servo, unsigned char position)
     {
         _delay(38);             // Clock cycle delay to make 1ms pulse (pos = 255)
     }                           // (change delay to modify the servo pulse length)
-    LATC = LATC & (!servo);     // End servo pulse by clearing servo output pin
+    LATC = LATC & ~servo;     // End servo pulse by clearing servo output pin
 }

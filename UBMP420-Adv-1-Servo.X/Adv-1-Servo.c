@@ -102,13 +102,13 @@ int main(void)
  *      bitmaps are able to set specific register bits by using logical
  *      operators as shown in this code from the servo_pulse() function:
 
-    PORTC = PORTC | servo;      // Set servo pin high and start fixed delay
+    LATC = LATC | servo;      // Set servo pin high and start fixed delay
 
  * 2.   Explain how the same SERVO[n] bitmaps that are used to set register
  *      bits can be used to clear register bits through the use of the logical
  *      operator shown in this statement from the servo_config() function:
  
-    TRISC = TRISC & (!servo);
+    TRISC = TRISC & ~servo;
  
  * 3.   When using the servo program code without interrupts, the variable-
  *      length servo pulses plus the fixed time delay between the pulses will
