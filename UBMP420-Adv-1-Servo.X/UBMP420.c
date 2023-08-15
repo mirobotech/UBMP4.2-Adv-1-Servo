@@ -1,21 +1,16 @@
 /*==============================================================================
- File: UBMP420.c                        Activity: mirobo.tech/ubmp4-advanced-1
- Date: May 19, 2023
+ File: UBMP420.c
+ Date: August 1, 2023
  
- UBMP4.2 (PIC16F1459) hardware initialization functions for the Advanced 1 Servo
- output programming activity.
+ UBMP4.2 (PIC16F1459) hardware initialization functions
  
  Initialization functions used to configure the PIC16F1459 oscillator, on-board
  UBMP4 I/O devices, and ADC (analog-to-digital converter), as well as ADC
  channel selection and conversion functions. Include the UBMP420.h file in your
  main program to call these functions. Add or modify functions as needed.
- 
- This UBMP420.c file has been modified with the addition of TMR0 interrupt
- configuration instructions which are used to generate periodic servo pulses.
 ==============================================================================*/
 
 #include    "xc.h"              // XC compiler general include file
-
 #include    "stdint.h"          // Include integer definitions
 #include    "stdbool.h"         // Include Boolean (true/false) definitions
 
@@ -34,26 +29,21 @@ void UBMP4_config(void)
 {
     OPTION_REG = 0b01010111;    // Enable port pull-ups, TMR0 internal, div-256
 
-    LATA = 0b00000000;          // Clear Port A latches before configuring PORTA
-    TRISA = 0b00001111;         // Set RUNLED and Beeper pins as outputs
-    ANSELA = 0b00000000;        // Disable analog input on all PORT A input pins
+    LATA = 0b00000000;          // Clear output latches before configuring PORTA
+    ANSELA = 0b00000000;        // Disable analog input on all PORTA input pins
     WPUA = 0b00001000;          // Enable weak pull-up on SW1 input only
+    TRISA = 0b00001111;         // Set LED D1 and Beeper pins as outputs
 
-    LATB = 0b00000000;          // Clear Port B latches before configuring PORTB
-    TRISB = 0b11110000;         // Enable pushbutton pins as inputs (SW2-SW5)
-    ANSELB = 0b00000000;        // Disable analog input on all PORT B input pins
+    LATB = 0b00000000;          // Clear output latches before configuring PORTB
+    ANSELB = 0b00000000;        // Disable analog input on all PORTB input pins
     WPUB = 0b11110000;          // Enable weak pull-ups on pushbutton inputs
+    TRISB = 0b11110000;         // Enable pushbutton pins as inputs (SW2-SW5)
 
-    LATC = 0b00000000;          // Clear Port C latches before configuring PORTC
+    LATC = 0b00000000;          // Clear output latches before configuring PORTC
+    ANSELC = 0b00000000;        // Disable analog input on all PORTC input pins
     TRISC = 0b00001111;         // Set LED pins as outputs, H1-H4 pins as inputs
-    ANSELC = 0b00000000;        // Disable analog input on all PORT C input pins
 
     // TODO - Enable interrupts here, if required.
-    
-    // Configure TMR0 interrupt for servo_int() function
-    TMR0 = 21;                  // Pre-set TMR0 period for 5ms time-out (@48MHz)
-    TMR0IF = 0;                 // Clear TMR0 interrupt flag
-    TMR0IE = 1;                 // Enable TMR0 interrupt
 }
 
 // Configure ADC for 8-bit conversion from on-board phototransistor Q1 (AN7).
@@ -85,7 +75,7 @@ unsigned char ADC_read(void)
 {
     GO = 1;                     // Start the conversion by setting Go/~Done bit
 	while(GO)                   // Wait for the conversion to finish (GO==0)
-        ;                       // (terminate the empty while loop)
+        ;                       // Terminating loop on new line silences warning
     return (ADRESH);            // Return the MSB (upper 8-bits) of the result
 }
 
@@ -99,7 +89,7 @@ unsigned char ADC_read_channel(unsigned char channel)
     __delay_us(5);              // Allow input to settle (charges internal cap.)
     GO = 1;                     // Start the conversion by setting Go/~Done bit
 	while(GO)                   // Wait for the conversion to finish (GO==0)
-        ;                       // (terminate the empty while loop)
+        ;                       // Terminating loop on new line silences warning
     ADON = 0;                   // Turn the ADC off
     return (ADRESH);            // Return the MSB (upper 8-bits) of the result
 }
